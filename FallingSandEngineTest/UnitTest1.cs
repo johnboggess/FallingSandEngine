@@ -31,8 +31,8 @@ namespace Tests
                 for (int chY = 0; chY < ChunksY; chY++)
                 {
                     Chunk chunk = world.GetChunkAtPosition(cellIndexX, cellIndexY);
-                    Assert.True(chunk.ChunkXLocal == chX);
-                    Assert.True(chunk.ChunkYLocal == chY);
+                    Assert.True(chunk.ChunkXIndex == chX);
+                    Assert.True(chunk.ChunkYIndex == chY);
 
                     Assert.True(chunk.ChunkX == chX * world.CellsPerChunkWidth);
                     Assert.True(chunk.ChunkY == chY * world.CellsPerChunkHeight);
@@ -41,8 +41,8 @@ namespace Tests
                         for (int schY = 0; schY < SubChunksY; schY++)
                         {
                             SubChunk subchunk = world.GetSubChunkAtPosition(cellIndexX, cellIndexY);
-                            Assert.True(subchunk.SubChunkXLocal == schX);
-                            Assert.True(subchunk.SubChunkYLocal == schY);
+                            Assert.True(subchunk.SubChunkXIndex == schX);
+                            Assert.True(subchunk.SubChunkYIndex == schY);
 
                             Assert.True(subchunk.SubChunkX == chX * world.CellsPerChunkWidth + schX * world.CellsPerSubChunkWidth);
                             Assert.True(subchunk.SubChunkY == chY * world.CellsPerChunkHeight + schY * world.CellsPerSubChunkHeight);

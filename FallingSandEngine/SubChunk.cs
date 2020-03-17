@@ -17,10 +17,10 @@ namespace FallingSandEngine
         int subChunkY;
         public int SubChunkY { get { return subChunkY; } }
 
-        int subChunkXLocal;
-        public int SubChunkXLocal { get { return subChunkXLocal; } }
-        int subChunkYLocal;
-        public int SubChunkYLocal { get { return subChunkYLocal; } }
+        int subChunkXIndex;
+        public int SubChunkXIndex { get { return subChunkXIndex; } }
+        int subChunkYIndex;
+        public int SubChunkYIndex { get { return subChunkYIndex; } }
         
         private int processableCells = 0;
         internal int ProcessableCells
@@ -51,11 +51,19 @@ namespace FallingSandEngine
             get { return ProcessableCells > 0; }
         }
 
-        public SubChunk(Chunk grid, int subChunkX, int subChunkY, int subChunkXLocal, int subChunkYLocal)
+        /// <summary>
+        /// Create a new subchunk
+        /// </summary>
+        /// <param name="grid">The chunk the subchunk belongs to</param>
+        /// <param name="subChunkX">X world position of the subchunk</param>
+        /// <param name="subChunkY">Y world position of the subchunk</param>
+        /// <param name="subChunkXIndex">X index of the subchunk in its chunk</param>
+        /// <param name="subChunkYIndex">Y index of the subchunk in its chunk</param>
+        public SubChunk(Chunk grid, int subChunkX, int subChunkY, int subChunkXIndex, int subChunkYIndex)
         {
             Chunk = grid;
-            this.subChunkXLocal = subChunkXLocal;
-            this.subChunkYLocal = subChunkYLocal;
+            this.subChunkXIndex = subChunkXIndex;
+            this.subChunkYIndex = subChunkYIndex;
             this.subChunkX = subChunkX;
             this.subChunkY = subChunkY;
 
@@ -64,12 +72,15 @@ namespace FallingSandEngine
             {
                 for (int y = 0; y < Chunk.World.CellsPerSubChunkHeight; y++)
                 {
-                    Cell c = new Cell(this, (subChunkXLocal * World.CellsPerSubChunkWidth + Chunk.ChunkXLocal * World.CellsPerChunkWidth) + x, (subChunkYLocal * World.CellsPerSubChunkHeight + Chunk.ChunkYLocal * World.CellsPerChunkHeight) + y, x, y);
+                    Cell c = new Cell(this, (subChunkXIndex * World.CellsPerSubChunkWidth + Chunk.ChunkXIndex * World.CellsPerChunkWidth) + x, (subChunkYIndex * World.CellsPerSubChunkHeight + Chunk.ChunkYIndex * World.CellsPerChunkHeight) + y, x, y);
                     Cells[x, y] = c;
                 }
             }
         }
 
+        /// <summary>
+        /// Process all active cells
+        /// </summary>
         public void Process()
         {
             for (int cellX = 0; cellX < Chunk.World.CellsPerSubChunkWidth; cellX++)
@@ -84,12 +95,24 @@ namespace FallingSandEngine
                 }
             }
         }
-        
-        public Cell GetCellAtPosition(int x, int y)
+
+        /// <summary>
+        /// Get the cell at the given index, does no bounds checking, faster than GetCellAtPositionIfValid
+        /// </summary>
+        /// <param name="xIndex">X index of the cell</param>
+        /// <param name="yIndex">Y index of the cell</param>
+        /// <returns>The cell at the given indices</returns>
+        public Cell GetCellAtPosition(int xIndex, int yIndex)
         {
-            return Cells[x, y];
+            return Cells[xIndex, yIndex];
         }
-        
+
+        /// <summary>
+        /// Get the cell at the given index if the given index is valid (slower than GetCellAtPosition)
+        /// </summary>
+        /// <param name="xIndex">X index of the cell</param>
+        /// <param name="yIndex">Y index of the cell</param>
+        /// <returns>The cell at the given indices</returns>
         public Cell GetCellAtPositionIfValid(int x, int y)
         {
             if (x > -1 && y > -1 && x < World.CellsPerSubChunkWidth && y < World.CellsPerSubChunkHeight)
